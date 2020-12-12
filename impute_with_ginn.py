@@ -5,9 +5,9 @@ from sklearn import model_selection, preprocessing
 
 from ginn import GINN
 from ginn.utils import degrade_dataset, data2onehot
+from ginn.seed import seed_all
 
-import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+
 
 datafile_w = 'heart.csv'
 
@@ -30,8 +30,9 @@ missingness= 0.2
 seed = 42
 
 x_train, x_test, y_train, y_test = model_selection.train_test_split(
-    X, y, test_size=0.3, stratify=y
+    X, y, test_size=0.3, stratify=y,random_state=seed
 )
+# print(x_train[:5,:4])
 cx_train, cx_train_mask = degrade_dataset(x_train, missingness,seed, np.nan)
 cx_test,  cx_test_mask  = degrade_dataset(x_test, missingness,seed, np.nan)
 

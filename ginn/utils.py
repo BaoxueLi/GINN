@@ -84,7 +84,8 @@ def degrade_dataset(X, missingness, rand, v):
     X_1d = X.flatten()
     n = len(X_1d)
     mask_1d = np.ones(n)
-
+    # my modification
+    random.seed(rand)
     corrupt_ids = random.sample(range(n), int(missingness * n))
     for i in corrupt_ids:
         X_1d[i] = v
@@ -94,6 +95,7 @@ def degrade_dataset(X, missingness, rand, v):
     mask = mask_1d.reshape(X.shape)
 
     return cX, mask
+
 
 
 def data2onehot(data, mask, num_cols, cat_cols):
@@ -125,7 +127,7 @@ def data2onehot(data, mask, num_cols, cat_cols):
         filled_data[:, col] = np.where(
             mask[:, col], filled_data[:, col], np.nanmedian(data[:, col])
         )
-
+ 
     # encode into 0-N lables
     for col in cat_cols:
         filled_data[:, col] = encode_classes(filled_data[:, col])
@@ -150,6 +152,7 @@ def data2onehot(data, mask, num_cols, cat_cols):
                 mask2onehot[i, :] = 0
         onehot_cat.append(col2onehot)
         cat_masks.append(mask2onehot)
+        # onehot_cat[0].shape=[303,x]
 
     cat_starting_col = []
     oh_data = num_data
@@ -162,6 +165,7 @@ def data2onehot(data, mask, num_cols, cat_cols):
         oh_data = np.c_[oh_data, onehot_cat[i]]
         oh_mask = np.c_[oh_mask, cat_masks[i]]
 
+    # oh_data.shape: 303,32
     oh_num_mask = np.zeros(oh_data.shape)
     oh_cat_mask = np.zeros(oh_data.shape)
 
@@ -175,7 +179,8 @@ def data2onehot(data, mask, num_cols, cat_cols):
         finish = start + cat_masks[i].shape[1]
         oh_cat_mask[:, start:finish] = cat_masks[i]
         oh_cat_cols.append((start, finish))
-
+    import ipdb
+    ipdb.set_trace()
     return oh_data, oh_mask, oh_num_mask, oh_cat_mask, oh_cat_cols
 
 
