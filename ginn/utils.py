@@ -179,8 +179,8 @@ def data2onehot(data, mask, num_cols, cat_cols):
         finish = start + cat_masks[i].shape[1]
         oh_cat_mask[:, start:finish] = cat_masks[i]
         oh_cat_cols.append((start, finish))
-    import ipdb
-    ipdb.set_trace()
+    # import ipdb
+    # ipdb.set_trace()
     return oh_data, oh_mask, oh_num_mask, oh_cat_mask, oh_cat_cols
 
 
@@ -276,9 +276,11 @@ def compute_weighted_adj(M, percentile):
         # second pruning
         v = M.flatten()
         treshold = np.percentile(v, percentile)
-
         M[M < treshold] = 0.0
         np.fill_diagonal(M, 0.0)
+        # 让对角线元素为0
+        # import ipdb
+        # ipdb.set_trace()
     return M
 
 
@@ -295,6 +297,7 @@ def dataset2nxg(cX, mask, percentile, metric, weight_missingness):
     """
 
     cX_sim = similarity_matrix(cX, mask, metric, weight_missingness)
+    # 对称阵
     cX_wadj = compute_weighted_adj(cX_sim, percentile)
     ngx = nx.DiGraph(cX_wadj)
     return ngx
